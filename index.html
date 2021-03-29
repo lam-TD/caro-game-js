@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<style>
+    * {
+        padding: 0;
+        border: 0;
+    }
+
+    #board {
+        display: block;
+        background-color: white;
+        margin: 0 auto;
+        margin-top: 60px;
+    }
+    img {
+        width: 50px;
+        height: 50px;
+        display: none;
+    }
+
+    form {
+        /* text-align: center; */
+    }
+
+    button {
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+    label span {
+        width: 200px;
+    }
+    .container-left {
+        width: 200px;
+        float: left;
+    }
+
+    .container-right {
+        padding-left: 100px;
+    }
+
+    .text-center { text-align: center;}
+    .text-color-red { color: red; }
+</style>
+
+<body>
+    <div class="container-left">
+        <button id="clear-chess" type="button" class="">Play</button>
+        <!-- <button class="">Undo</button> -->
+        <!-- <button class="">Redo</button> -->
+        <br>
+        <label id="mouse-position" for=""></label>
+        <br>
+        <label for="">Turn: <span id="lb-chess-turn"></span></label>
+        <br>
+        <label for="">Left <span id="timer-count-down">00:00</span> seconds</label>
+
+        <img id="icon-circle" src="./caro-icon-circle.png" alt="">
+        <img id="icon-remove" src="./caro-icon-remove.png" alt="">
+    </div>
+    
+    <div class="container-right">
+        <h3 id="display-winner" class="text-center text-color-red">CARO GAME</h3>
+        <canvas id="board" width="800" height="800"></canvas>
+    </div>
+    <script src="./index.js"></script>
+</body>
+
+</html>

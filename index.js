@@ -7,7 +7,9 @@ const CHESS_COLOR_GREEN = "green";
 
 let lbMouse = document.getElementById("mouse-position");
 const iconCircle = document.getElementById('icon-circle');
+const iconCircleWin = document.getElementById('icon-circle-win');
 const iconRemove = document.getElementById('icon-remove');
+const iconRemoveWin = document.getElementById('icon-remove-win');
 const btnClearChess = document.getElementById("clear-chess");
 const lbChessTurn = document.getElementById("lb-chess-turn");
 const displayTimer = document.getElementById("timer-count-down");
@@ -21,11 +23,11 @@ const checkerBox = { width: 20, height: 20 }
 let matrixBoard = [];
 const oneMinutes = 10;
 let winner = null;
+let listPointWin = [];
+let isStartGame = 1;
 
 // start timer
 let interval;
-informTurnChess(getTurn())
-timerCountDown(oneMinutes, displayTimer);
 // Timer count down
 function timerCountDown(duration, displayTimer) {
     clearInterval(interval);
@@ -63,11 +65,17 @@ function timerCountDown(duration, displayTimer) {
 }
 
 function getTurn() {
-    return (whoIsClick == CHESS_COLOR_GREEN) ? CHESS_COLOR_RED : CHESS_COLOR_GREEN
+    return (whoIsClick == CHESS_COLOR_GREEN) ? CHESS_COLOR_RED : CHESS_COLOR_GREEN;
 }
 
 function getWinner() {
-    return whoIsClick
+    return whoIsClick;
+}
+
+function startGame() {
+    btnClearChess.innerText = "Restart game";
+    informTurnChess(getTurn());
+    timerCountDown(oneMinutes, displayTimer);
 }
 
 function Board(width, height) {
@@ -129,6 +137,10 @@ function informTurnChess(whoIsClick) {
     lbChessTurn.style.color = whoIsClick;
 }
 
+function isExist(listOfChessPoints, xSearch, ySearch) {
+    return listOfChessPoints.find(chess => chess.x == xSearch && chess.y == ySearch)
+}
+
 function drawCheckerBox({ x, y }) {
     if (winner !== null) {
         clearInterval(interval);
@@ -166,8 +178,13 @@ function drawCheckerBox({ x, y }) {
     }
 }
 
-function isExist(listOfChessPoints, xSearch, ySearch) {
-    return listOfChessPoints.find(chess => chess.x == xSearch && chess.y == ySearch)
+function drawWinnerLine(listPointWin) {
+    listPointWin.forEach(point => {
+        let X = point.x * checkerBox.width;
+        let Y = point.y * checkerBox.height;
+        let iconWin = whoIsClick == CHESS_COLOR_RED ? iconRemoveWin : iconCircleWin;
+        ctx.drawImage(iconWin, X, Y, checkerBox.width, checkerBox.height);
+    });
 }
 
 function isEndGame(chessPoint, whoIsClick) {
@@ -180,16 +197,16 @@ function isEndGame(chessPoint, whoIsClick) {
 }
 
 function isWinHorizontal(chessPoint, whoIsClick) {
-
     let countLeft = 0;
     let countRight = 0;
-
+    listPointWin = [];
     // count left
     for (let i = chessPoint.x; i >= 0; i--) {
         if (i < 0) { break; }
 
         if (whoIsClick == matrixBoard[i][chessPoint.y].typeOfChess) {
             countLeft++;
+            listPointWin = [...listPointWin, matrixBoard[i][chessPoint.y]];
         } else { break; }
     }
 
@@ -199,22 +216,27 @@ function isWinHorizontal(chessPoint, whoIsClick) {
 
         if (whoIsClick == matrixBoard[i][chessPoint.y].typeOfChess) {
             countRight++;
+            listPointWin = [...listPointWin, matrixBoard[i][chessPoint.y]];
         } else { break; }
     }
 
+    if (countLeft + countRight == 5) {
+        drawWinnerLine(listPointWin)
+    }
     return countLeft + countRight == 5
 }
 
 function isWinVertical(chessPoint, whoIsClick) {
     let countTop = 0;
     let countBottom = 0;
-
+    listPointWin = [];
     // cout top
     for (let i = chessPoint.y; i >= 0; i--) {
         if (i < 0) { break; }
 
         if (whoIsClick == matrixBoard[chessPoint.x][i].typeOfChess) {
             countTop++;
+            listPointWin = [...listPointWin, matrixBoard[chessPoint.x][i]]
         } else { break; }
     }
 
@@ -224,21 +246,26 @@ function isWinVertical(chessPoint, whoIsClick) {
 
         if (whoIsClick == matrixBoard[chessPoint.x][i].typeOfChess) {
             countBottom++;
+            listPointWin = [...listPointWin, matrixBoard[chessPoint.x][i]]
         } else { break; }
     }
-
+    if (countTop + countBottom == 5) {
+        drawWinnerLine(listPointWin)
+    }
     return countTop + countBottom == 5
 }
 
 function isWinMainDiagonal(chessPoint, whoIsClick) {
     let countTop = 0;
     let countBottom = 0;
+    listPointWin = [];
     // cout top
     for (let i = chessPoint.x; i >= 0; i--) {
         if (chessPoint.y - countTop < 0) {
             break;
         }
         if (whoIsClick == matrixBoard[i][chessPoint.y - countTop].typeOfChess) {
+            listPointWin = [...listPointWin, matrixBoard[i][chessPoint.y - countTop]];
             countTop++;
         } else { break; }
     }
@@ -248,21 +275,29 @@ function isWinMainDiagonal(chessPoint, whoIsClick) {
         if (chessPoint.y + countBottom + 1 > matrixBoard.length - 1) { break; }
 
         if (whoIsClick == matrixBoard[i][chessPoint.y + countBottom + 1].typeOfChess) {
+            listPointWin = [...listPointWin, matrixBoard[i][chessPoint.y + countBottom + 1]];
             countBottom++;
         } else { break; }
     }
+
+    if (countTop + countBottom == 5) {
+        drawWinnerLine(listPointWin)
+    }
+
     return countTop + countBottom == 5
 }
 
 function isWinSecondaryDiagonal(chessPoint, whoIsClick) {
     let countTop = 0;
     let countBottom = 0;
+    listPointWin = [];
     // cout top
     for (let i = chessPoint.x; i >= 0; i--) {
         if (chessPoint.y + countTop > matrixBoard.length - 1) {
             break;
         }
         if (whoIsClick == matrixBoard[i][chessPoint.y + countTop].typeOfChess) {
+            listPointWin = [...listPointWin, matrixBoard[i][chessPoint.y + countTop]];
             countTop++;
         } else { break; }
     }
@@ -272,9 +307,15 @@ function isWinSecondaryDiagonal(chessPoint, whoIsClick) {
         if (chessPoint.y - (countBottom + 1) < 0) { break; }
 
         if (whoIsClick == matrixBoard[i][chessPoint.y - (countBottom + 1)].typeOfChess) {
+            listPointWin = [...listPointWin, matrixBoard[i][chessPoint.y - (countBottom + 1)]];
             countBottom++;
         } else { break; }
     }
+
+    if (countTop + countBottom == 5) {
+        drawWinnerLine(listPointWin)
+    }
+
     return countTop + countBottom == 5
 }
 
@@ -289,12 +330,16 @@ canvas.addEventListener('click', function (evt) {
     var mousePos = getMousePos(canvas, evt);
     let params = { x: mousePos.x, y: mousePos.y, width: 20, height: 20 };
     var checkerBoxPos = getCheckerBoxPos(params)
-    var message = `Mouse position: ${checkerBoxPos.x}, ${checkerBoxPos.y}`;
-    writeMessage(message);
+    writeMessage(`Mouse position: ${checkerBoxPos.x}, ${checkerBoxPos.y}`);
     drawCheckerBox({ x: checkerBoxPos.x, y: checkerBoxPos.y })
 }, false);
 
 btnClearChess.addEventListener("click", () => {
-    board.clear()
-    board.drawBoard()
+    if (isStartGame) {
+        board.drawBoard();
+        startGame();
+        isStartGame = 0;
+    } else {
+        board.clear();
+    }
 })

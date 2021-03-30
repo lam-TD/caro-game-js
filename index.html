@@ -20,6 +20,7 @@
         margin: 0 auto;
         margin-top: 60px;
     }
+
     img {
         width: 50px;
         height: 50px;
@@ -34,9 +35,11 @@
         padding: 10px 20px;
         cursor: pointer;
     }
+
     label span {
         width: 200px;
     }
+
     .container-left {
         width: 200px;
         float: left;
@@ -46,15 +49,14 @@
         padding-left: 100px;
     }
 
-    .text-center { text-align: center;}
+    .text-center { text-align: center; }
     .text-color-red { color: red; }
+    .width-100 { width: 100% !important; }
 </style>
 
 <body>
     <div class="container-left">
-        <button id="clear-chess" type="button" class="">Play</button>
-        <!-- <button class="">Undo</button> -->
-        <!-- <button class="">Redo</button> -->
+        <button id="clear-chess" type="button" class="width-100">Play</button>
         <br>
         <label id="mouse-position" for=""></label>
         <br>
@@ -64,8 +66,11 @@
 
         <img id="icon-circle" src="./caro-icon-circle.png" alt="">
         <img id="icon-remove" src="./caro-icon-remove.png" alt="">
+
+        <img id="icon-circle-win" src="./caro-icon-circle-win.png" alt="">
+        <img id="icon-remove-win" src="./caro-icon-remove-win.png" alt="">
     </div>
-    
+    <hr>
     <div class="container-right">
         <h3 id="display-winner" class="text-center text-color-red">CARO GAME</h3>
         <canvas id="board" width="800" height="800"></canvas>
